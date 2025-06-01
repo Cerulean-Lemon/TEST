@@ -33,11 +33,9 @@
         align-items: center;
         font-size: 4rem;
         font-weight: bold;
-        color: #fff;
+        color: black;
         border-bottom: 8px solid #222;
         transition: transform 0.1s ease-out;
-        /* --- 줄 추가 --- */
-        position: absolute;
       }
       .section::before,
       .section::after {
@@ -81,7 +79,7 @@
         z-index: 1;
         opacity: 0;
       }
-      .section .film-divider {
+      .film-divider {
         position: absolute;
         left: 0;
         bottom: 0;
@@ -92,14 +90,30 @@
         pointer-events: none;
       }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   </head>
   <body>
     <div id="film-container">
-      <div class="section section1"></div>
-      <div class="section section2"></div>
-      <div class="section section3"></div>
-      <div class="section section4"></div>
-      <div class="section section5"></div>
+      <div class="section section1">
+        Home
+        <div class="film-divider"></div>
+      </div>
+      <div class="section section2">
+        About me
+        <div class="film-divider"></div>
+      </div>
+      <div class="section section3">
+        Skills
+        <div class="film-divider"></div>
+      </div>
+      <div class="section section4">
+        Works
+        <div class="film-divider"></div>
+      </div>
+      <div class="section section5">
+        Contact
+        <div class="film-divider"></div>
+      </div>
     </div>
     <script>
       // 섹션 정보
@@ -113,27 +127,45 @@
       const sectionCount = sections.length;
       const vh = window.innerHeight;
 
+      // 초기 상태 기억
+      let prevStates = sections.map(() => ({ opacity: null, top: null }));
+
       window.addEventListener("scroll", () => {
         const scrollY = Math.min(window.scrollY, vh * (sectionCount - 1));
-
         sections.forEach((section, i) => {
           const startAt = i * vh;
+          let targetOpacity, targetTop;
           if (i === 0) {
-            section.style.opacity = 1;
-            section.style.top = Math.min(scrollY, vh) + "px";
+            targetOpacity = 1;
+            targetTop = Math.min(scrollY, vh);
           } else {
             if (scrollY >= startAt) {
-              section.style.opacity = 1;
-              section.style.top = scrollY - startAt + "px";
+              targetOpacity = 1;
+              targetTop = scrollY - startAt;
             } else {
-              section.style.opacity = 1;
-              section.style.top = "0px";
+              targetOpacity = 1;
+              targetTop = 0;
             }
+          }
+
+          // 값이 바뀔 때만 애니메이션 실행
+          if (
+            prevStates[i].opacity !== targetOpacity ||
+            prevStates[i].top !== targetTop
+          ) {
+            gsap.to(section, {
+              opacity: targetOpacity,
+              top: targetTop,
+              duration: 0.45,
+              ease: "power2.out",
+            });
+            prevStates[i].opacity = targetOpacity;
+            prevStates[i].top = targetTop;
           }
         });
       });
 
-      // 초기화 (새로고침시에도 정상위치)
+      // 초기화
       window.dispatchEvent(new Event("scroll"));
     </script>
   </body>
