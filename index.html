@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>줄줄이 필름 펼치기</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #222;
+        overflow-x: hidden;
+      }
+      body {
+        height: 500vh;
+      }
+      #film-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+      }
+      .section {
+        position: absolute;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 4rem;
+        font-weight: bold;
+        color: #fff;
+        border-bottom: 8px solid #222;
+        transition: transform 0.1s ease-out;
+        /* --- 줄 추가 --- */
+        position: absolute;
+      }
+      .section::before,
+      .section::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 160px;
+        height: 100%;
+        background: #111;
+        z-index: 10;
+        pointer-events: none;
+      }
+      .section::before {
+        left: 0;
+      }
+      .section::after {
+        right: 0;
+      }
+      .section1 {
+        background: white;
+        z-index: 5;
+        opacity: 1;
+      }
+      .section2 {
+        background: yellow;
+        z-index: 4;
+        opacity: 0;
+      }
+      .section3 {
+        background: pink;
+        z-index: 3;
+        opacity: 0;
+      }
+      .section4 {
+        background: coral;
+        z-index: 2;
+        opacity: 0;
+      }
+      .section5 {
+        background: seagreen;
+        z-index: 1;
+        opacity: 0;
+      }
+      .section .film-divider {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 16px;
+        background: #111;
+        z-index: 20;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="film-container">
+      <div class="section section1"></div>
+      <div class="section section2"></div>
+      <div class="section section3"></div>
+      <div class="section section4"></div>
+      <div class="section section5"></div>
+    </div>
+    <script>
+      // 섹션 정보
+      const sections = [
+        document.querySelector(".section1"),
+        document.querySelector(".section2"),
+        document.querySelector(".section3"),
+        document.querySelector(".section4"),
+        document.querySelector(".section5"),
+      ];
+      const sectionCount = sections.length;
+      const vh = window.innerHeight;
+
+      window.addEventListener("scroll", () => {
+        const scrollY = Math.min(window.scrollY, vh * (sectionCount - 1));
+
+        sections.forEach((section, i) => {
+          const startAt = i * vh;
+          if (i === 0) {
+            section.style.opacity = 1;
+            section.style.top = Math.min(scrollY, vh) + "px";
+          } else {
+            if (scrollY >= startAt) {
+              section.style.opacity = 1;
+              section.style.top = scrollY - startAt + "px";
+            } else {
+              section.style.opacity = 1;
+              section.style.top = "0px";
+            }
+          }
+        });
+      });
+
+      // 초기화 (새로고침시에도 정상위치)
+      window.dispatchEvent(new Event("scroll"));
+    </script>
+  </body>
+</html>
